@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print3D - Магазин 3D-печати</title>
+    <style>
+        /* Глобальные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4e54c8;
+            --secondary: #8f94fb;
+            --accent: #ff6b6b;
+            --dark: #2d3436;
+            --light: #f7f9fc;
+            --success: #00b894;
+            --warning: #fdcb6e;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light) 0%, #e0e7ff 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Шапка */
+        header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        
+        .nav-links a:hover, 
+        .nav-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Секции */
+        .section {
+            display: none;
+            padding: 40px 0;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--primary);
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        /* Личный кабинет */
+        .orders-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .order-date {
+            color: #777;
+        }
+        
+        .order-model {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .order-details {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .order-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .status-processing {
+            background: rgba(253, 203, 110, 0.2);
+            color: #e17055;
+        }
+        
+        .status-completed {
+            background: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+        }
+        
+        .status-shipped {
+            background: rgba(78, 84, 200, 0.2);
+            color: var(--primary);
+        }
+        
+        /* Каталог */
+        .catalog-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover, 
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .model-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .model-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .model-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+        
+        .model-info {
+            padding: 20px;
+        }
+        
+        .model-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .model-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .model-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .model-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Загрузка модели */
+        .upload-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--secondary);
+            background: rgba(143, 148, 251, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 64px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        /* Футер */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #444;
+            color: #999;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .catalog-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            
+            .upload-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span class="logo-icon">🧊</span>
+                    <span>Print3D</span>
+                </div>
+                
+                <div class="nav-links">
+                    <a href="#" class="nav-link active" data-target="dashboard">Личный кабинет</a>
+                    <a href="#" class="nav-link" data-target="catalog">Каталог моделей</a>
+                    <a href="#" class="nav-link" data-target="upload">Загрузить модель</a>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="btn btn-outline">Войти</button>
+                    <button class="btn btn-primary">Регистрация</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Личный кабинет -->
+        <section id="dashboard" class="section active">
+            <h2 class="section-title">Мои заказы</h2>
+            
+            <div class="orders-container">
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-id">#PR-2023-456</div>
+                        <div class="order-date">15.10.2023</div>
+                    </div>
+                    <div class="order-model">Архитектурная модель небоскреба</div>
+                    <div class="order-details">
+                        Материал: PLA пластик<br>
+                        Цвет: Белый<br>
+                        Срок печати: 2 дня
+                    </div>
+                    <div class="order-status status-processing">В производстве</div>
+                </div>
+                
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-id">#PR-2023-398</div>
+                        <div class="order-date">10.10.2023</div>
+                    </div>
+                    <div class="order-model">Фигурка персонажа</div>
+                    <div class="order-details">
+                        Материал: PETG<br>
+                        Цвет: Красный<br>
+                        Срок печати: 1 день
+                    </div>
+                    <div class="order-status status-completed">Завершен</div>
+                </div>
+                
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-id">#PR-2023-412</div>
+                        <div class="order-date">05.10.2023</div>
+                    </div>
+                    <div class="order-model">Деталь механизма</div>
+                    <div class="order-details">
+                        Материал: ABS пластик<br>
+                        Цвет: Черный<br>
+                        Срок печати: 3 дня
+                    </div>
+                    <div class="order-status status-shipped">Отправлен</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Каталог моделей -->
+        <section id="catalog" class="section">
+            <h2 class="section-title">Каталог 3D моделей</h2>
+            
+            <div class="catalog-filters">
+                <button class="filter-btn active">Все</button>
+                <button class="filter-btn">Архитектура</button>
+                <button class="filter-btn">Фигурки</button>
+                <button class="filter-btn">Техника</button>
+                <button class="filter-btn">Бижутерия</button>
+            </div>
+            
+            <div class="catalog-grid">
+                <div class="model-card">
+                    <div class="model-image">🏙️</div>
+                    <div class="model-info">
+                        <h3 class="model-title">Современный дом</h3>
+                        <p class="model-description">Архитектурная модель современного коттеджа с детализацией</p>
+                        <div class="model-price">1 490 ₽</div>
+                        <div class="model-actions">
+                            <button class="btn btn-outline">Подробнее</button>
+                            <button class="btn btn-primary">Заказать</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-image">🤖</div>
+                    <div class="model-info">
+                        <h3 class="model-title">Робот-гуманоид</h3>
+                        <p class="model-description">Подвижная модель робота высотой 25 см</p>
+                        <div class="model-price">2 990 ₽</div>
+                        <div class="model-actions">
+                            <button class="btn btn-outline">Подробнее</button>
+                            <button class="btn btn-primary">Заказать</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-image">🚗</div>
+                    <div class="model-info">
+                        <h3 class="model-title">Ретро автомобиль</h3>
+                        <p class="model-description">Коллекционная модель автомобиля 60-х годов</p>
+                        <div class="model-price">2 290 ₽</div>
+                        <div class="model-actions">
+                            <button class="btn btn-outline">Подробнее</button>
+                            <button class="btn btn-primary">Заказать</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-image">💍</div>
+                    <div class="model-info">
+                        <h3 class="model-title">Ажурное кольцо</h3>
+                        <p class="model-description">Элегантное кольцо с геометрическим узором</p>
+                        <div class="model-price">890 ₽</div>
+                        <div class="model-actions">
+                            <button class="btn btn-outline">Подробнее</button>
+                            <button class="btn btn-primary">Заказать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Загрузка модели -->
+        <section id="upload" class="section">
+            <h2 class="section-title">Загрузка 3D модели</h2>
+            
+            <div class="upload-container">
+                <div class="upload-area" id="dropZone">
+                    <div class="upload-icon">📤</div>
+                    <h3>Перетащите файл сюда</h3>
+                    <p>или</p>
+                    <button class="btn btn-primary" id="browseBtn">Выбрать файл</button>
+                    <input type="file" class="file-input" id="fileInput" accept=".stl,.obj,.3mf">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Название модели</label>
+                    <input type="text" class="form-control" placeholder="Например: Деталь механизма">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-control" rows="3" placeholder="Опишите особенности вашей модели..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Материал</label>
+                    <select class="form-control">
+                        <option>PLA (стандартный)</option>
+                        <option>ABS (прочный)</option>
+                        <option>PETG (гибкий)</option>
+                        <option>TPU (резиновый)</option>
+                        <option>Дерево (декоративный)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Цвет</label>
+                    <select class="form-control">
+                        <option>Белый</option>
+                        <option>Черный</option>
+                        <option>Красный</option>
+                        <option>Синий</option>
+                        <option>Зеленый</option>
+                        <option>Желтый</option>
+                        <option>Прозрачный</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 18px;">
+                    Отправить на печать
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Print3D</h3>
+                    <p>Сервис профессиональной 3D-печати по запросу. Печатаем ваши модели на промышленных принтерах.</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Меню</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Личный кабинет</a></li>
+                        <li><a href="#">Каталог моделей</a></li>
+                        <li><a href="#">Загрузить модель</a></li>
+                        <li><a href="#">Цены</a></li>
+                        <li><a href="#">Материалы</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li>📞 +7 (999) 123-45-67</li>
+                        <li>✉️ info@print3d.ru</li>
+                        <li>🏢 Москва, ул. Технологическая, 15</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 Print3D. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Переключение между секциями
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Убираем активный класс у всех ссылок и секций
+                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+                
+                // Добавляем активный класс текущей ссылке
+                this.classList.add('active');
+                
+                // Показываем целевую секцию
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // Загрузка файла
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+
+        browseBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                handleFile(fileInput.files[0]);
+            }
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#4e54c8';
+            dropZone.style.backgroundColor = 'rgba(78, 84, 200, 0.05)';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#ddd';
+            dropZone.style.backgroundColor = '';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+            dropZone.style.borderColor = '#ddd';
+            dropZone.style.backgroundColor = '';
+        });
+
+        function handleFile(file) {
+            const validTypes = ['application/sla', 'model/stl', 'application/octet-stream', 'application/vnd.ms-pki.stl'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            
+            if (validTypes.includes(file.type) || ['stl', 'obj', '3mf'].includes(fileExtension)) {
+                alert(`Файл "${file.name}" успешно загружен!`);
+            } else {
+                alert('Пожалуйста, загрузите файл в формате STL, OBJ или 3MF');
+            }
+        }
+    </script>
+</body>
+</html>
