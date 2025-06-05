@@ -3,6 +3,8 @@ const ws = new WebSocket("ws://localhost:8080");
 const enterbtn: HTMLElement = document.getElementById("enter-btn")!;
 const exitbtn: HTMLElement = document.getElementById("exit-btn")!;
 const regbtn: HTMLElement = document.getElementById("regbtn")!;
+const dashboard: HTMLElement = document.getElementById("dashboard")!;
+const dashboardi: HTMLElement = document.getElementById("emptydashboard")!;
 
 const useractions: HTMLElement = document.getElementById("userActions")!;
 const userprofile: HTMLElement = document.getElementById("userProfile")!;
@@ -25,8 +27,9 @@ let current_user: User3D = {
 };
 if (last_data) {
   current_user = JSON.parse(last_data);
-  apply_user();
 }
+
+apply_user();
 
 localStorage.setItem("userData", JSON.stringify(current_user));
 
@@ -71,10 +74,12 @@ ws.addEventListener("message", (event: MessageEvent) => {
   }
 
   if (current_user.id !== 0) {
+    apply_user();
     userprofile.style.display = "flex";
     useractions.style.display = "none";
     userEmail.textContent = current_user.username;
   } else {
+    apply_user();
     userprofile.style.display = "none";
     useractions.style.display = "flex";
   }

@@ -39,6 +39,8 @@ var ws = new WebSocket("ws://localhost:8080");
 var enterbtn = document.getElementById("enter-btn");
 var exitbtn = document.getElementById("exit-btn");
 var regbtn = document.getElementById("regbtn");
+var dashboard = document.getElementById("dashboard");
+var dashboardi = document.getElementById("emptydashboard");
 var useractions = document.getElementById("userActions");
 var userprofile = document.getElementById("userProfile");
 var userEmail = document.getElementById("userEmail");
@@ -54,8 +56,8 @@ var current_user = {
 };
 if (last_data) {
     current_user = JSON.parse(last_data);
-    apply_user();
 }
+apply_user();
 localStorage.setItem("userData", JSON.stringify(current_user));
 function setall() {
     return __awaiter(this, void 0, void 0, function () {
@@ -114,11 +116,13 @@ ws.addEventListener("message", function (event) {
         localStorage.setItem("userData", JSON.stringify(current_user));
     }
     if (current_user.id !== 0) {
+        apply_user();
         userprofile.style.display = "flex";
         useractions.style.display = "none";
         userEmail.textContent = current_user.username;
     }
     else {
+        apply_user();
         userprofile.style.display = "none";
         useractions.style.display = "flex";
     }
