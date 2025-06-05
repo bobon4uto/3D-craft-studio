@@ -1,4 +1,4 @@
-const ws = new WebSocket("ws://localhost:8080");
+const ws = new WebSocket("ws://217.71.129.139:5459");
 
 const enterbtn: HTMLElement = document.getElementById("enter-btn")!;
 const exitbtn: HTMLElement = document.getElementById("exit-btn")!;
