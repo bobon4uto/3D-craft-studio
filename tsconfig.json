@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+		"lib": ["dom","es6"],
+    //"module": "commonjs",
+    "outDir": "./build",
+		"rootDir": "./src",
+		"strict": true,
+		"typeRoots": ["./node_modules/@types/", "./@types/"],
+    "baseUrl": "./",
+		"esModuleInterop": true,
+		    "experimentalDecorators": true, // Enable experimental decorators
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports":true ,
+ "paths": {
+      "tests3D": ["./@types/3D-craft-studio/tests.d.ts"]
+    } },
+	"include": ["./src/**/*.ts", "./@types/**/*.d.ts"]
+}
+

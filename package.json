@@ -1,0 +1,36 @@
+{
+  "name": "3d-craft-studio",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/bobon4uto/3D-craft-studio#readme",
+  "bugs": {
+    "url": "https://github.com/bobon4uto/3D-craft-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobon4uto/3D-craft-studio.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "src/server/main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/server/main.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "pg": "^8.16.0",
+    "reflect-metadata": "^0.2.2",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.24",
+    "typescript": "^5.8.3",
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "@types/websocket": "^1.0.10",
+    "@types/ws": "^8.18.1",
+    "websocket-ts": "^2.2.1"
+  }
+}
